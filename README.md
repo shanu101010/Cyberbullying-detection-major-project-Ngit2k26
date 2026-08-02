@@ -1,184 +1,182 @@
-# CyberSafe — Cyberbullying Detection (Enhanced)
+# 🛡️ Cyberbullying Detection System
 
-## What's New vs. Original
-
-| Problem | Old App | New App |
-|---|---|---|
-| "awesome" flagged as bullying | ❌ Only knew training data | ✅ Sentiment lexicon handles unknown words |
-| "you slayed bestie" = bullying | ❌ Saw "slayed" as violence | ✅ Gen Z slang dictionary, context-aware |
-| No way to teach new words | ❌ Retrain entire model | ✅ Add words live via UI |
-| Single model signal | ❌ Only H5 model | ✅ Ensemble: H5 + Sentiment + Custom Words |
+An AI-powered web application that detects cyberbullying in text using Natural Language Processing (NLP) and Deep Learning. The system analyzes user input, predicts whether the text contains cyberbullying, and provides a safe, interactive interface for real-time detection.
 
 ---
 
-## Architecture
+## 📌 Project Overview
 
-```
-User Input
-    │
-    ├── [1] H5 Keras Model (your trained model, 55% weight)
-    │       └── Handles patterns it learned from Kaggle data
-    │
-    ├── [2] Sentiment Engine (45% weight)
-    │       ├── Positive word lexicon (500+ words)
-    │       ├── Negative/threat word lexicon
-    │       ├── Gen Z slang dictionary (50+ terms)
-    │       ├── Negation detection ("not hate" ≠ hate)
-    │       └── Intensity modifiers
-    │
-    └── [3] Custom Word Layer (additive correction)
-            └── Words you add via the UI → applied immediately
-                Stored in custom_words.json
-```
+Cyberbullying has become a major concern across social media platforms and online communities. This project aims to assist in identifying harmful or abusive text using machine learning techniques, enabling safer digital communication.
 
-**Ensemble formula:**
-```
-final_score = (model_prob × 0.55) + (adjusted_prob × 0.45)
-adjusted_prob = model_prob + sentiment_adjustment + genz_corrections
-```
+The application combines a trained deep learning model with a Flask web interface to classify user-entered text into cyberbullying or non-cyberbullying categories.
 
 ---
 
-## Project Structure
+## ✨ Features
+
+- 🔍 Real-time cyberbullying detection
+- 🤖 Deep Learning based text classification
+- 🌐 User-friendly Flask web interface
+- 💾 Pre-trained model support
+- 📊 User feedback storage
+- 📝 Custom abusive word dictionary
+- ⚡ Fast prediction for user input
+
+---
+
+## 🛠️ Tech Stack
+
+### Languages
+- Python
+- HTML
+- CSS
+- JavaScript
+
+### Frameworks & Libraries
+- Flask
+- TensorFlow / Keras
+- NumPy
+- Pandas
+- Scikit-learn
+- Pickle
+
+---
+
+## 📂 Project Structure
 
 ```
-cyberbullying_app/
-├── app.py                  # Flask routes + ensemble logic
-├── sentiment_engine.py     # Sentiment analysis + Gen Z slang
+Cyberbullying-detection-major-project-Ngit2k26/
+│
+├── templates/
+│   └── index.html
+│
+├── app.py
+├── sentiment_engine.py
 ├── requirements.txt
-├── cyberbullying_model.h5  # Your trained model (copy here)
-├── tokenizer.pkl           # Your tokenizer (copy here)
-├── user_feedback.json      # Auto-created: stores user corrections
-├── custom_words.json       # Auto-created: stores trained words
-└── templates/
-    └── index.html          # Premium UI
+├── tokenizer.pkl
+├── cyberbullying_model.h5
+├── cyberbullying_tweets.csv
+├── custom_words.json
+├── user_feedback.json
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-## Setup & Run (Local)
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-# 1. Install dependencies
-pip install flask tensorflow numpy
+git clone https://github.com/shanu101010/Cyberbullying-detection-major-project-Ngit2k26.git
+```
 
-# 2. Copy your model files into the project folder
-cp /path/to/cyberbullying_model.h5 ./
-cp /path/to/tokenizer.pkl ./
+### 2. Navigate to the Project
 
-# 3. Run
+```bash
+cd Cyberbullying-detection-major-project-Ngit2k26
+```
+
+### 3. Create a Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+Activate it:
+
+**Windows**
+
+```bash
+.venv\Scripts\activate
+```
+
+### 4. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Run the Application
+
+```bash
 python app.py
+```
 
-# 4. Open browser
-# http://localhost:5000
+Open your browser and visit:
+
+```
+http://127.0.0.1:5000
 ```
 
 ---
 
-## Deploy to Production
+## 📊 Dataset
 
-### Option A: Render.com (Free tier, recommended)
-1. Push project to GitHub
-2. Go to render.com → New Web Service
-3. Connect your repo
-4. Build command: `pip install -r requirements.txt`
-5. Start command: `gunicorn app:app`
-6. Add `gunicorn` to requirements.txt
+The project uses a labeled cyberbullying dataset for training and evaluation.
 
-### Option B: Railway.app
-1. Push to GitHub
-2. New project → Deploy from GitHub
-3. Railway auto-detects Flask
-4. Set start command: `python app.py`
+Dataset included:
 
-### Option C: Heroku
-```bash
-# Add Procfile:
-echo "web: gunicorn app:app" > Procfile
-heroku create your-app-name
-git push heroku main
-```
-
-### Option D: Local with ngrok (quick demo)
-```bash
-pip install ngrok
-python app.py &
-ngrok http 5000
-```
+- `cyberbullying_tweets.csv`
 
 ---
 
-## User Training Feature
+## 🧠 Model
 
-Users can teach the model new words directly from the UI:
+This repository includes:
 
-- **Positive words**: words that should reduce bullying probability
-  - Examples: "awesome", "fire", "bussin", custom compliments
-- **Negative words**: words that should increase bullying probability
-  - Examples: domain-specific slurs, threats your model missed
+- Trained Keras model (`cyberbullying_model.h5`)
+- Tokenizer (`tokenizer.pkl`)
 
-All custom words are stored in `custom_words.json` and applied immediately — no retraining needed.
+> **Note:** The original Hugging Face `model.safetensors` file has been excluded because it exceeds GitHub's 100 MB file size limit.
 
 ---
 
-## Gen Z Slang Coverage
+## 📸 Application Preview
 
-The system automatically understands these as positive:
-- slay/slayed, ate, no crumbs, bestie, iconic, GOAT
-- queen, king, mother, bussin, fire, lit, snatched
-- serve/serving, glow up, rizz, based, pop off, hits different
-- W, understood the assignment, no cap, vibe, vibing, bet
-- main character, stan, brat, it's giving, sksksk
+Add screenshots here.
 
-And these as negative/concerning:
-- throwing shade, ratio, L, mid, cap, pressed, salty
-- ok boomer, sus, unalived
-
----
-
-## How the Sentiment Engine Fixes "awesome"
-
-1. "awesome" is in the positive word lexicon
-2. Sentiment engine detects 1 positive word
-3. `net_sentiment = +0.15` (positive)
-4. `sentiment_adjustment = -0.06` (reduces bullying probability)
-5. Even if model gave 0.6 (bullying), final = ~0.50 → borderline
-6. With 2+ positive words, clearly pulled below 0.5 → Safe
-
----
-
-## How Gen Z Context Works: "you slayed and ate, bitch"
-
-1. Model may see "bitch" → flags as bullying (0.75)
-2. Sentiment engine:
-   - "slayed" → Gen Z positive, modifier = -0.45
-   - "ate" → Gen Z positive, modifier = -0.45
-   - "bitch" → negative word, +0.1
-   - Net: strongly positive
-3. `genz_positive_count = 2` → additional -0.30 correction
-4. `final_prob ≈ 0.28` → Safe Content ✅
-5. UI shows: "Gen Z compliments detected: slayed, ate"
-
----
-
-## API Endpoints
+Example:
 
 ```
-POST /api/predict
-  Body: { "text": "..." }
-  Returns: { prediction, probability, severity, sentiment, reasoning, genz_detected }
-
-POST /api/add-word
-  Body: { "word": "awesome", "label": "positive" }
-  Returns: { status, message }
-
-POST /api/feedback
-  Body: { "text": "...", "correct_label": "safe"|"bullying" }
-  Returns: { status, message }
-
-GET /api/custom-words
-  Returns: { positive: [...], negative: [...] }
-
-GET /api/stats
-  Returns: { total_feedback, custom_positive_words, custom_negative_words }
+screenshots/
+    home.png
+    prediction.png
 ```
+
+Then display them using:
+
+```markdown
+![Home Page](screenshots/home.png)
+```
+
+---
+
+## 📈 Future Enhancements
+
+- Multi-class cyberbullying classification
+- Toxicity severity score
+- Explainable AI (XAI) for predictions
+- User authentication
+- Deployment using Render or Railway
+- REST API support
+- Dashboard with prediction analytics
+
+---
+
+## 👩‍💻 Author
+
+**Shanmukhi**
+
+- AIML Undergraduate
+- Aspiring Business Analyst & UI/UX Designer
+
+GitHub:
+https://github.com/shanu101010
+
+---
+
+## 📄 License
+
+This project is intended for educational and academic purposes.
