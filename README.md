@@ -133,23 +133,6 @@ This repository includes:
 
 ---
 
-## 📸 Application Preview
-
-Add screenshots here.
-
-Example:
-
-```
-screenshots/
-    home.png
-    prediction.png
-```
-
-Then display them using:
-
-```markdown
-![Home Page](screenshots/home.png)
-```
 
 ---
 
