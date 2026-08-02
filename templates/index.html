@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberSafe — Intelligent Content Guardian</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+*, *::before, *::after { box-sizing:border-box;margin:0;padding:0; }
+
+:root {
+  --bg:        #06040f;
+  --surface:   #0c0818;
+  --card:      #110d20;
+  --border:    #1e1640;
+  --border2:   #2a1f58;
+
+  /* Blues & Purples */
+  --accent:    #7c3aed;
+  --accent2:   #a78bfa;
+  --blue:      #3b82f6;
+  --indigo:    #6366f1;
+  --violet:    #8b5cf6;
+
+  /* Status — green/yellow/red stay */
+  --green:     #22c55e;
+  --green-dim: rgba(34,197,94,0.08);
+  --green-bdr: rgba(34,197,94,0.25);
+  --yellow:    #eab308;
+  --yellow-dim:rgba(234,179,8,0.08);
+  --yellow-bdr:rgba(234,179,8,0.25);
+  --red:       #ef4444;
+  --red-dim:   rgba(239,68,68,0.08);
+  --red-bdr:   rgba(239,68,68,0.25);
+  --orange:    #f97316;
+
+  --text:      #e2e8f0;
+  --muted:     #64748b;
+  --muted2:    #94a3b8;
+  --mono:      'DM Mono', monospace;
+  --display:   'Syne', sans-serif;
+  --body:      'Inter', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Subtle purple grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Purple glow */
+body::after {
+  content: '';
+  position: fixed;
+  top: -150px; right: -150px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(124,58,237,0.07), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 52px 24px 80px;
+}
+
+/* ── HEADER ── */
+header { text-align: center; margin-bottom: 52px; }
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.logo-icon {
+  width: 40px; height: 40px;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.35);
+  border-radius: 10px;
+  display: grid; place-items: center;
+  font-size: 20px;
+}
+
+h1 {
+  font-family: var(--display);
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa, #6366f1, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--muted2);
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* ── MAIN CARD ── */
+.main-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px;
+  margin-bottom: 24px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.main-card:focus-within {
+  border-color: rgba(124,58,237,0.4);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.06);
+}
+
+.card-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── TEXTAREA ── */
+.textarea-wrap { position: relative; }
+
+textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 18px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  min-height: 130px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea::placeholder { color: var(--muted); }
+
+textarea:focus {
+  border-color: rgba(124,58,237,0.5);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.07);
+}
+
+.char-count {
+  position: absolute;
+  bottom: 10px; right: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 12px; margin-top: 18px; }
+
+.btn-analyze {
+  background: linear-gradient(135deg, var(--accent), var(--indigo));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 28px;
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-analyze:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(124,58,237,0.35);
+}
+
+.btn-analyze:active  { transform: translateY(0); }
+.btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-clear {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+  border-radius: 10px;
+  padding: 13px 20px;
+  font-family: var(--body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-clear:hover { border-color: var(--muted); color: var(--text); }
+
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESULT ── */
+.result-panel { display: none; margin-top: 28px; }
+.result-panel.visible {
+  display: block;
+  animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Verdict */
+.verdict {
+  border-radius: 14px;
+  padding: 22px 24px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 16px;
+  border: 1px solid;
+  transition: all 0.4s;
+}
+
+.verdict.safe     { background: var(--green-dim);  border-color: var(--green-bdr); }
+.verdict.moderate { background: var(--yellow-dim); border-color: var(--yellow-bdr); }
+.verdict.bullying { background: var(--red-dim);    border-color: var(--red-bdr); }
+
+.verdict-icon { font-size: 26px; flex-shrink: 0; }
+
+.verdict-label {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.verdict.safe     .verdict-label { color: var(--green); }
+.verdict.moderate .verdict-label { color: var(--yellow); }
+.verdict.bullying .verdict-label { color: var(--red); }
+
+.verdict-sub { font-size: 13px; color: var(--muted2); margin-top: 2px; }
+
+.verdict-prob { margin-left: auto; text-align: right; flex-shrink: 0; }
+
+.verdict-prob-num {
+  font-family: var(--mono);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.verdict.safe     .verdict-prob-num { color: var(--green); }
+.verdict.moderate .verdict-prob-num { color: var(--yellow); }
+.verdict.bullying .verdict-prob-num { color: var(--red); }
+
+.verdict-prob-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* Confidence bar */
+.conf-bar-track {
+  height: 6px;
+  background: var(--surface);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.conf-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 100px;
+  transition: width 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* Metrics */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.metric-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.metric-chip-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+
+.metric-chip-value {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--text);
+}
+
+/* Signals */
+.signals-row {
+  display: none;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.signal-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* Reasoning */
+.reasoning-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--violet);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.reasoning-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--violet);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+
+.reasoning-text { font-size: 13px; color: var(--muted2); line-height: 1.65; }
+
+/* Feedback */
+.feedback-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.feedback-label { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+.btn-fb {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-fb:hover { border-color: var(--violet); color: var(--violet); }
+
+.feedback-sent { font-family: var(--mono); font-size: 11px; color: var(--green); display: none; }
+
+/* ── EXAMPLES ── */
+.examples-section { margin-top: 32px; }
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 8px;
+}
+
+.example-chip {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 12px;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.example-chip:hover {
+  border-color: var(--border2);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+.dot-safe     { background: var(--green); }
+.dot-bullying { background: var(--red); }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  margin-top: 36px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.stat-item { text-align: center; }
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--accent2);
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.stat-divider { width: 1px; height: 32px; background: var(--border); }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  margin-top: 48px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: var(--mono);
+  line-height: 1.8;
+}
+
+.footer span { color: var(--accent2); }
+
+@media (max-width: 600px) {
+  .main-card { padding: 24px; }
+  h1 { font-size: 2.2rem; }
+  .verdict { flex-wrap: wrap; }
+  .verdict-prob { margin-left: 0; }
+  .stat-divider { display: none; }
+}
+</style>
+</head>
+
+<body>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-row">
+      <div class="logo-icon">🛡</div>
+      <h1>CyberSafe</h1>
+    </div>
+    <p class="subtitle">Intelligent content analysis · Fine-tuned Twitter-RoBERTa · Understands modern language</p>
+  </header>
+
+  <!-- MAIN CARD -->
+  <div class="main-card">
+    <div class="card-label">Text Analysis</div>
+
+    <div class="textarea-wrap">
+      <textarea id="inputText" maxlength="500"
+        placeholder="Type or paste a message, comment, or tweet to analyze..."></textarea>
+      <span class="char-count" id="charCount">0 / 500</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-analyze" id="analyzeBtn" onclick="analyze()">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnText">Analyze</span>
+      </button>
+      <button class="btn-clear" onclick="clearAll()">Clear</button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-panel" id="resultPanel">
+
+      <div class="verdict" id="verdict">
+        <div class="verdict-icon" id="verdictIcon">—</div>
+        <div>
+          <div class="verdict-label" id="verdictLabel">—</div>
+          <div class="verdict-sub"   id="verdictSub">—</div>
+        </div>
+        <div class="verdict-prob">
+          <div class="verdict-prob-num"   id="probNum">—</div>
+          <div class="verdict-prob-label">Risk Score</div>
+        </div>
+      </div>
+
+      <div class="conf-bar-track">
+        <div class="conf-bar-fill" id="confBarFill"></div>
+      </div>
+
+      <div class="metrics-grid" id="metricsGrid"></div>
+
+      <div class="signals-row" id="signalsRow"></div>
+
+      <div class="reasoning-box">
+        <div class="reasoning-label">Model Reasoning</div>
+        <div class="reasoning-text" id="reasoningText">—</div>
+      </div>
+
+      <div class="feedback-row">
+        <span class="feedback-label">Was this correct?</span>
+        <button class="btn-fb" onclick="sendFeedback('correct')">✓ Yes</button>
+        <button class="btn-fb" onclick="sendFeedback('wrong')">✗ No</button>
+        <span class="feedback-sent" id="feedbackSent">Recorded ✓</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EXAMPLES -->
+  <div class="examples-section">
+    <div class="section-label">Try These Examples</div>
+    <div class="examples-grid">
+      <div class="example-chip" onclick="tryExample(this)" data-text="10/10 no notes bestie you absolutely slayed">
+        <div class="dot dot-safe"></div>10/10 no notes bestie you slayed
+      </div>
+      <div class="example-chip" onclick="tryExample(this)" data-text="you are so awesome, amazing work!">
+        <div class="dot dot-safe"></div>you are so awesome, amazing work!
+      </div>
+      <div class="example-chip" onclick="tryExample(this)" data-text="chefs kiss, understood the assignment periodt">
+        <div class="dot dot-safe"></div>chefs kiss, understood the assignment
+      </div>
+      <div class="example-chip" onclick="tryExample(this)" data-text="bussin bussin absolute banger fr fr">
+        <div class="dot dot-safe"></div>bussin bussin absolute banger fr fr
+      </div>
+      <div class="example-chip" onclick="tryExample(this)" data-text="queen slayed and ate, no crumbs left">
+        <div class="dot dot-safe"></div>queen slayed and ate, no crumbs left
+      </div>
+      <div class="example-chip" onclick="tryExample(this)" data-text="you are so ugly and worthless, nobody likes you">
+        <div class="dot dot-bullying"></div>you are ugly and worthless
+      </div>
+      <div class="example-chip" onclick="tryExample(this)" data-text="I will hurt you, get out of here loser">
+        <div class="dot dot-bullying"></div>I will hurt you, get out loser
+      </div>
+      <div class="example-chip" onclick="tryExample(this)" data-text="you are so stupid and useless, trash">
+        <div class="dot dot-bullying"></div>you are stupid and useless, trash
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value">RoBERTa</div>
+      <div class="stat-label">Model</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value">58M</div>
+      <div class="stat-label">Pre-train Tweets</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value">47K</div>
+      <div class="stat-label">Fine-tune Dataset</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value">89.6%</div>
+      <div class="stat-label">Accuracy</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value">0.88</div>
+      <div class="stat-label">F1 Score</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="feedbackCount">0</div>
+      <div class="stat-label">Feedback</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Aeliya · Shanmukhi · Sanjana</span><br>
+  </div>
+
+</div>
+
+<script>
+let lastText = '';
+
+document.getElementById('inputText').addEventListener('input', function() {
+  document.getElementById('charCount').textContent = `${this.value.length} / 500`;
+});
+
+document.getElementById('inputText').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) analyze();
+});
+
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res  = await fetch('/api/stats');
+    const data = await res.json();
+    document.getElementById('feedbackCount').textContent = data.total_feedback || 0;
+  } catch(e) {}
+});
+
+function tryExample(el) {
+  const text = el.dataset.text;
+  document.getElementById('inputText').value = text;
+  document.getElementById('charCount').textContent = `${text.length} / 500`;
+  analyze();
+}
+
+async function analyze() {
+  const text = document.getElementById('inputText').value.trim();
+  if (!text) return;
+  lastText = text;
+
+  const btn = document.getElementById('analyzeBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  btnText.textContent = 'Analyzing...';
+
+  try {
+    const res  = await fetch('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    renderResult(data);
+  } catch(e) {
+    alert('Connection error. Is the Flask server running?');
+  } finally {
+    btn.disabled = false;
+    spinner.style.display = 'none';
+    btnText.textContent = 'Analyze';
+  }
+}
+
+function renderResult(d) {
+  if (d.error) { alert(d.error); return; }
+
+  document.getElementById('feedbackSent').style.display = 'none';
+  document.getElementById('resultPanel').className = 'result-panel visible';
+
+  const prob    = d.probability;
+  const severity = d.severity || '';
+
+  // Verdict class
+  let vClass = 'safe';
+  if (severity === 'Severe Risk' || severity === 'High Risk') vClass = 'bullying';
+  else if (severity === 'Moderate Risk') vClass = 'moderate';
+
+  document.getElementById('verdict').className = `verdict ${vClass}`;
+
+  const icons = { safe: '✓', moderate: '⚠', bullying: '✕' };
+  document.getElementById('verdictIcon').textContent  = icons[vClass];
+  document.getElementById('verdictLabel').textContent = d.prediction || (d.is_bullying ? 'Cyberbullying Detected' : 'Safe Content');
+  document.getElementById('verdictSub').textContent   = severity + ' · Transformer analysis';
+  document.getElementById('probNum').textContent      = (prob * 100).toFixed(1) + '%';
+
+  // Bar
+  const colors = {
+    'Safe Content':  '#22c55e',
+    'Low Risk':      '#84cc16',
+    'Moderate Risk': '#eab308',
+    'High Risk':     '#f97316',
+    'Severe Risk':   '#ef4444'
+  };
+  const fill = document.getElementById('confBarFill');
+  fill.style.width = '0%';
+  fill.style.background = colors[severity] || '#6366f1';
+  setTimeout(() => { fill.style.width = (prob * 100) + '%'; }, 80);
+
+  // Metrics
+  const raw      = d.raw_probability !== undefined ? (d.raw_probability * 100).toFixed(1) + '%' : '—';
+  const calText  = d.calibrated !== undefined ? (d.calibrated ? 'Yes ✓' : 'No') : '—';
+  const calColor = d.calibrated ? 'var(--green)' : 'var(--muted2)';
+
+  document.getElementById('metricsGrid').innerHTML = `
+    <div class="metric-chip">
+      <div class="metric-chip-label">Risk Score</div>
+      <div class="metric-chip-value">${(prob * 100).toFixed(1)}%</div>
+    </div>
+    <div class="metric-chip">
+      <div class="metric-chip-label">Raw Model Score</div>
+      <div class="metric-chip-value">${raw}</div>
+    </div>
+    <div class="metric-chip">
+      <div class="metric-chip-label">Calibrated</div>
+      <div class="metric-chip-value" style="color:${calColor}">${calText}</div>
+    </div>
+    <div class="metric-chip">
+      <div class="metric-chip-label">Model</div>
+      <div class="metric-chip-value" style="font-size:13px;color:var(--muted2)">RoBERTa</div>
+    </div>
+  `;
+
+  // Signals
+  const signals = d.signals || [];
+  const sigRow  = document.getElementById('signalsRow');
+  if (signals.length && d.calibrated) {
+    sigRow.style.display = 'flex';
+    sigRow.innerHTML = signals.map(s => `<span class="signal-tag">${s}</span>`).join('');
+  } else {
+    sigRow.style.display = 'none';
+  }
+
+  // Reasoning
+  document.getElementById('reasoningText').textContent = d.reasoning || '—';
+}
+
+function clearAll() {
+  document.getElementById('inputText').value = '';
+  document.getElementById('charCount').textContent = '0 / 500';
+  document.getElementById('resultPanel').className = 'result-panel';
+}
+
+async function sendFeedback(label) {
+  if (!lastText) return;
+  try {
+    await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: lastText, correct_label: label })
+    });
+    document.getElementById('feedbackSent').style.display = 'inline';
+    const cnt = document.getElementById('feedbackCount');
+    cnt.textContent = parseInt(cnt.textContent || 0) + 1;
+  } catch(e) {}
+}
+</script>
+</body>
+</html>

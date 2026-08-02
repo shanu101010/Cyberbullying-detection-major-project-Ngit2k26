@@ -1,0 +1,52 @@
+[
+  {
+    "text": "10/10, no notes.",
+    "correct_label": "wrong",
+    "timestamp": "2026-03-10T18:22:53.018422"
+  },
+  {
+    "text": "awesome",
+    "correct_label": "correct",
+    "timestamp": "2026-03-11T00:50:56.878588"
+  },
+  {
+    "text": "10/10 no notes bestie you absolutely slayed",
+    "correct_label": "correct",
+    "timestamp": "2026-03-11T01:55:59.065422"
+  },
+  {
+    "text": "I will hurt you, get out of here loser",
+    "correct_label": "correct",
+    "timestamp": "2026-03-11T01:56:11.181413"
+  },
+  {
+    "text": "gossip girl is so dramatic",
+    "correct_label": "wrong",
+    "timestamp": "2026-03-11T01:57:03.861645"
+  },
+  {
+    "text": "this is awesome",
+    "correct_label": "correct",
+    "timestamp": "2026-03-11T01:57:32.730292"
+  },
+  {
+    "text": "queen slayed and ate, no crumbs left",
+    "correct_label": "correct",
+    "timestamp": "2026-03-11T12:05:55.372438"
+  },
+  {
+    "text": "The CEO is an a**hole!",
+    "correct_label": "correct",
+    "timestamp": "2026-03-13T12:05:20.455803"
+  },
+  {
+    "text": "How long did this take?",
+    "correct_label": "wrong",
+    "timestamp": "2026-03-13T12:06:20.147313"
+  },
+  {
+    "text": "you are not an idiot",
+    "correct_label": "wrong",
+    "timestamp": "2026-05-18T11:20:04.221133"
+  }
+]
