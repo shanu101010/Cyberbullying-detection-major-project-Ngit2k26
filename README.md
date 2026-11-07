@@ -152,8 +152,7 @@ This repository includes:
 
 **Shanmukhi**
 
-- AIML Undergraduate
-- Aspiring Business Analyst & UI/UX Designer
+AI | Data Analytics | UI/UX Design
 
 GitHub:
 https://github.com/shanu101010
